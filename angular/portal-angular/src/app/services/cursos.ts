@@ -1,6 +1,3 @@
-//creo modelo que represente los datos que recibire, injectando hhtp cliente pueda acceder a coinsumir algun servicio
-
-
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -20,25 +17,25 @@ export interface CursosModel {
 })
 export class CursosService {
   private http = inject(HttpClient);
+  private apiUrl = 'http://localhost:3000/api/cursos';
 
+  // 📋 OBTENER todos los cursos
   getCurso(): Observable<CursosModel[]> {
-    return this.http.get<CursosModel[]>('http://localhost:3000/api/cursos');
+    return this.http.get<CursosModel[]>(this.apiUrl);
   }
   
-  // 🗑️ ELIMINAR curso por ID
+  // ➕ CREAR un nuevo curso (usa Partial para no requerir _id)
+  crearCurso(curso: Partial<CursosModel>): Observable<CursosModel> {
+    return this.http.post<CursosModel>(this.apiUrl, curso);
+  }
+
+  // ✏️ ACTUALIZAR un curso existente
+  actualizarCurso(id: string, curso: Partial<CursosModel>): Observable<CursosModel> {
+    return this.http.put<CursosModel>(`${this.apiUrl}/${id}`, curso);
+  }
+
+  // 🗑️ ELIMINAR un curso
   eliminarCurso(id: string): Observable<any> {
-    return this.http.delete(`http://localhost:3000/api/cursos/${id}`);
+    return this.http.delete(`${this.apiUrl}/${id}`);
   }
-
-  // Crear curso (opcional)
-  crearCurso(curso: any): Observable<any> {
-    return this.http.post('http://localhost:3000/api/cursos', curso);
-  }
-
-  // Actualizar curso (opcional)
-  actualizarCurso(id: string, curso: any): Observable<any> {
-    return this.http.put(`http://localhost:3000/api/cursos/${id}`, curso);
-  }
-
-  
 }

@@ -1,4 +1,3 @@
-//implementando de angular core on init , para decilre que me conectare a un serrvicioo y esperare respuestas
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CursosModel, CursosService } from '../../services/cursos';
 
@@ -12,9 +11,19 @@ import { CursosModel, CursosService } from '../../services/cursos';
 export class Cursos implements OnInit {
   cursos = signal<CursosModel[]>([]);
 
-   // Variables para el formulario de edición
+  // Variables para el formulario de edición
   cursoEditando = signal<CursosModel | null>(null);
   mostrarFormularioEdicion = signal<boolean>(false);
+
+  // 🆕 VARIABLES PARA EL FORMULARIO DE CREAR
+  nuevoCurso = {
+    curso: '',
+    docente: '',
+    categoria: '',
+    inscritos: '0',
+    precio: '0',
+    estado: 'Activo'
+  };
 
   private cursoService = inject(CursosService);
 
@@ -29,7 +38,10 @@ export class Cursos implements OnInit {
       }
     });
   }
+
+  // ============================================
   // 🗑️ ELIMINAR curso
+  // ============================================
   eliminarCurso(id: string, nombre: string): void {
     if (confirm(`¿Estás seguro de eliminar el curso "${nombre}"?`)) {
       this.cursoService.eliminarCurso(id).subscribe({
@@ -45,26 +57,29 @@ export class Cursos implements OnInit {
     }
   }
 
-   // ✏️ ABRIR formulario de edición
+  // ============================================
+  // ✏️ MÉTODOS PARA EDITAR
+  // ============================================
+
+  // ✏️ ABRIR formulario de edición
   abrirEditar(curso: CursosModel): void {
-    this.cursoEditando.set({ ...curso }); // Copia los datos del curso
+    this.cursoEditando.set({ ...curso });
     this.mostrarFormularioEdicion.set(true);
   }
 
-   // ✏️ CERRAR formulario de edición
+  // ✏️ CERRAR formulario de edición
   cerrarEditar(): void {
     this.cursoEditando.set(null);
     this.mostrarFormularioEdicion.set(false);
   }
 
-   // ✏️ GUARDAR cambios
+  // ✏️ GUARDAR cambios
   guardarEdicion(): void {
     const curso = this.cursoEditando();
     if (!curso) return;
 
     this.cursoService.actualizarCurso(curso._id, curso).subscribe({
       next: (cursoActualizado) => {
-        // Actualizar la lista local con los cambios
         this.cursos.update(cursos =>
           cursos.map(c => c._id === curso._id ? cursoActualizado : c)
         );
@@ -78,7 +93,7 @@ export class Cursos implements OnInit {
     });
   }
 
-  // ✏️ Actualizar los campos del formulario
+  // ✏️ Actualizar los campos del formulario de edición
   actualizarCampo(campo: keyof CursosModel, valor: string): void {
     const curso = this.cursoEditando();
     if (curso) {
@@ -86,6 +101,56 @@ export class Cursos implements OnInit {
       this.cursoEditando.set({ ...curso });
     }
   }
+
+  // ============================================
+  // 🆕 MÉTODOS PARA CREAR (NUEVO)
+  // ============================================
+
+  // 🆕 LIMPIAR formulario de crear
+  limpiarFormulario(): void {
+    this.nuevoCurso = {
+      curso: '',
+      docente: '',
+      categoria: '',
+      inscritos: '0',
+      precio: '0',
+      estado: 'Activo'
+    };
+    // Desplazar la vista al formulario
+    const formulario = document.querySelector('.card .card-header');
+    if (formulario) {
+      formulario.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
+  // 🆕 ACTUALIZAR campo del nuevo curso
+  actualizarNuevoCurso(campo: string, valor: string): void {
+    this.nuevoCurso = {
+      ...this.nuevoCurso,
+      [campo]: valor
+    };
+  }
+
+  // 🆕 GUARDAR nuevo curso
+  guardarNuevoCurso(): void {
+    // Validar campos obligatorios
+    if (!this.nuevoCurso.curso.trim() || !this.nuevoCurso.docente.trim()) {
+      alert('⚠️ Los campos "Curso" y "Docente" son obligatorios');
+      return;
+    }
+
+    this.cursoService.crearCurso(this.nuevoCurso).subscribe({
+      next: (cursoCreado) => {
+        console.log('✅ Curso creado:', cursoCreado);
+        alert('✅ Curso creado exitosamente');
+        // Agregar el nuevo curso a la lista local
+        this.cursos.update(cursos => [...cursos, cursoCreado]);
+        this.limpiarFormulario();
+      },
+      error: (error) => {
+        console.error('❌ Error al crear curso:', error);
+        alert('❌ Error al crear el curso. Verifica la conexión con el servidor.');
+      }
+    });
+  }
 }
-  
-  

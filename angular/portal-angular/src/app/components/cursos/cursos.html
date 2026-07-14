@@ -1,158 +1,209 @@
 <nav class="breadcrumb" aria-label="Ruta de navegación">
-          <a routerLink="/">Dashboard</a>
-          <span class="separator" aria-hidden="true">›</span>
-          <span class="current">Gestión de cursos version actualizada</span>
-        </nav>
+  <a routerLink="/">Dashboard</a>
+  <span class="separator" aria-hidden="true">›</span>
+  <span class="current">Gestión de cursos version actualizada</span>
+</nav>
 
-        <div class="page-header">
-          <div class="page-header-row">
-            <div>
-              <h1 class="page-title">Gestión de cursos</h1>
-              <p class="page-subtitle">Administra el catálogo completo de cursos de la plataforma.</p>
+<div class="page-header">
+  <div class="page-header-row">
+    <div>
+      <h1 class="page-title">Gestión de cursos</h1>
+      <p class="page-subtitle">Administra el catálogo completo de cursos de la plataforma.</p>
+    </div>
+    <!-- 🔽 CAMBIO 1: Botón "Nuevo curso" ahora llama a limpiarFormulario() -->
+    <button class="btn btn-primary" (click)="limpiarFormulario()">+ Nuevo curso</button>
+  </div>
+</div>
+
+<!-- Filtros / Búsqueda -->
+<div class="card" style="margin-bottom:var(--space-6);">
+  <div style="display:flex;gap:var(--space-4);align-items:center;flex-wrap:wrap;">
+    <div class="search-bar" style="flex:1;min-width:200px;" aria-label="Buscar curso">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" placeholder="Buscar por nombre, docente, categoría..." aria-label="Buscar curso" />
+    </div>
+    <select class="form-control" style="width:auto;" aria-label="Filtrar por categoría">
+      <option>Todas las categorías</option>
+      <option>Frontend</option>
+      <option>Backend</option>
+      <option>Full Stack</option>
+      <option>Seguridad</option>
+    </select>
+    <select class="form-control" style="width:auto;" aria-label="Filtrar por estado">
+      <option>Todos los estados</option>
+      <option>Activo</option>
+      <option>Inactivo</option>
+      <option>Borrador</option>
+    </select>
+  </div>
+</div>
+
+<!-- 🔽 CAMBIO 2: FORMULARIO PARA CREAR CURSO (AHORA CON BINDINGS) -->
+<div class="card" style="margin-bottom:var(--space-6);">
+  <div class="card-header">
+    <h2 class="card-title">📝 Registrar curso</h2>
+    <!-- Botón "Crear curso" ahora llama a guardarNuevoCurso() -->
+    <button class="btn btn-primary btn-sm" (click)="guardarNuevoCurso()">💾 Crear curso</button>
+  </div>
+  
+  <div class="form-row cols-2" style="margin-bottom:var(--space-5);">
+    <div class="form-group" style="margin-bottom:0;">
+      <div class="form-label">Curso *</div>
+      <!-- 🔽 CAMBIO 3: value y input para enlazar con nuevoCurso.curso -->
+      <input 
+        type="text" 
+        [value]="nuevoCurso.curso"
+        (input)="actualizarNuevoCurso('curso', $any($event.target).value)"
+        placeholder="Ej: Angular Avanzado"
+        style="padding:var(--space-3) var(--space-4);background:var(--gray-50);border:1px solid var(--border-color);border-radius:var(--border-radius);font-size:var(--text-sm);color:var(--text-primary); width: 100%" 
+      />
+    </div>
+    <div class="form-group" style="margin-bottom:0;">
+      <div class="form-label">Docente *</div>
+      <!-- 🔽 CAMBIO 4: value y input para enlazar con nuevoCurso.docente -->
+      <input 
+        type="text" 
+        [value]="nuevoCurso.docente"
+        (input)="actualizarNuevoCurso('docente', $any($event.target).value)"
+        placeholder="Ej: Juan Pérez"
+        style="padding:var(--space-3) var(--space-4);background:var(--gray-50);border:1px solid var(--border-color);border-radius:var(--border-radius);font-size:var(--text-sm);color:var(--text-primary); width: 100%" 
+      />
+    </div>
+  </div>
+  
+  <div class="form-row cols-2">
+    <div class="form-group" style="margin-bottom:0;">
+      <div class="form-label">Categoría</div>
+      <!-- 🔽 CAMBIO 5: Select enlazado con nuevoCurso.categoria -->
+      <select 
+        [value]="nuevoCurso.categoria"
+        (change)="actualizarNuevoCurso('categoria', $any($event.target).value)"
+        style="padding:var(--space-3) var(--space-4);background:var(--gray-50);border:1px solid var(--border-color);border-radius:var(--border-radius);font-size:var(--text-sm);color:var(--text-primary); width: 100%"
+      >
+        <option value="">Seleccionar categoría</option>
+        <option value="Frontend">Frontend</option>
+        <option value="Backend">Backend</option>
+        <option value="Full Stack">Full Stack</option>
+        <option value="Seguridad">Seguridad</option>
+      </select>
+    </div>
+    <div class="form-group" style="margin-bottom:0;">
+      <div class="form-label">Inscritos</div>
+      <!-- 🔽 CAMBIO 6: Input numérico enlazado con nuevoCurso.inscritos -->
+      <input 
+        type="number" 
+        [value]="nuevoCurso.inscritos"
+        (input)="actualizarNuevoCurso('inscritos', $any($event.target).value)"
+        placeholder="0"
+        style="padding:var(--space-3) var(--space-4);background:var(--gray-50);border:1px solid var(--border-color);border-radius:var(--border-radius);font-size:var(--text-sm);color:var(--text-primary); width: 100%" 
+      />
+    </div>
+  </div>
+  
+  <div class="form-row cols-2">
+    <div class="form-group" style="margin-bottom:0;">
+      <div class="form-label">Precio (S/)</div>
+      <!-- 🔽 CAMBIO 7: Input numérico con step enlazado con nuevoCurso.precio -->
+      <input 
+        type="number" 
+        [value]="nuevoCurso.precio"
+        (input)="actualizarNuevoCurso('precio', $any($event.target).value)"
+        placeholder="0.00"
+        step="0.01"
+        style="padding:var(--space-3) var(--space-4);background:var(--gray-50);border:1px solid var(--border-color);border-radius:var(--border-radius);font-size:var(--text-sm);color:var(--text-primary); width: 100%" 
+      />
+    </div>
+    <div class="form-group" style="margin-bottom:0;">
+      <div class="form-label">Estado</div>
+      <!-- 🔽 CAMBIO 8: Select enlazado con nuevoCurso.estado -->
+      <select 
+        [value]="nuevoCurso.estado"
+        (change)="actualizarNuevoCurso('estado', $any($event.target).value)"
+        style="padding:var(--space-3) var(--space-4);background:var(--gray-50);border:1px solid var(--border-color);border-radius:var(--border-radius);font-size:var(--text-sm);color:var(--text-primary); width: 100%"
+      >
+        <option value="Activo">Activo</option>
+        <option value="Inactivo">Inactivo</option>
+        <option value="Borrador">Borrador</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<!-- 📊 TABLA DE CURSOS -->
+<div class="table-wrapper">
+  <table class="table" aria-label="Tabla de gestión de cursos">
+    <thead>
+      <tr>
+        <th scope="col">Curso</th>
+        <th scope="col">Docente</th>
+        <th scope="col">Categoría</th>
+        <th scope="col">Inscritos</th>
+        <th scope="col">Rating</th>
+        <th scope="col">Precio</th>
+        <th scope="col">Estado</th>
+        <th scope="col">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (curso of cursos(); track curso._id) {
+        <tr>
+          <td>
+            <div class="user-cell">
+              <div
+                style="width:42px;height:42px;background:linear-gradient(135deg,#1a1a2e,#7c3aed);border-radius:var(--border-radius);display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0;"
+                aria-hidden="true">
+                ⚡
+              </div>
+              <div class="user-info">
+                <div class="name">{{ curso.curso }}</div>
+                <div class="sub">60 horas · Virtual</div>
+              </div>
             </div>
-            <button class="btn btn-primary" onclick="alert('Modal: Nuevo Curso')">+ Nuevo curso</button>
-          </div>
-        </div>
-
-        <!-- Filtros / Búsqueda -->
-        <div class="card" style="margin-bottom:var(--space-6);">
-          <div style="display:flex;gap:var(--space-4);align-items:center;flex-wrap:wrap;">
-            <div class="search-bar" style="flex:1;min-width:200px;" aria-label="Buscar curso">
-              <span aria-hidden="true">🔍</span>
-              <input type="search" placeholder="Buscar por nombre, docente, categoría..." aria-label="Buscar curso" />
+          </td>
+          <td>{{ curso.docente }}</td>
+          <td>
+            <span class="badge badge-accent no-dot">{{ curso.categoria }}</span>
+          </td>
+          <td>
+            <strong>{{ curso.inscritos }}</strong>
+          </td>
+          <td>⭐ 4.9</td>
+          <td>
+            <strong>S/ {{ curso.precio }}</strong>
+          </td>
+          <td>
+            <span class="badge badge-success">{{ curso.estado }}</span>
+          </td>
+          <td>
+            <div class="td-actions">
+              <button class="btn btn-ghost btn-icon btn-sm" title="Editar" (click)="abrirEditar(curso)">✏️</button>
+              <button class="btn btn-ghost btn-icon btn-sm" title="Desactivar">🔕</button>
+              <button class="btn btn-ghost btn-icon btn-sm" title="Eliminar" style="color:var(--danger-600);" (click)="eliminarCurso(curso._id, curso.curso)">🗑️</button>
             </div>
-            <select class="form-control" style="width:auto;" aria-label="Filtrar por categoría">
-              <option>Todas las categorías</option>
-              <option>Frontend</option>
-              <option>Backend</option>
-              <option>Full Stack</option>
-              <option>Seguridad</option>
-            </select>
-            <select class="form-control" style="width:auto;" aria-label="Filtrar por estado">
-              <option>Todos los estados</option>
-              <option>Activo</option>
-              <option>Inactivo</option>
-              <option>Borrador</option>
-            </select>
-          </div>
-        </div>
+          </td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="8" style="text-align:center;padding:2rem;">
+            <p style="color:var(--gray-500);">📚 No hay cursos registrados</p>
+            <p style="font-size:0.875rem;color:var(--gray-400);">Haz clic en "+ Nuevo curso" para agregar el primero</p>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
 
+<!-- 📄 PAGINACIÓN -->
+<nav class="pagination" aria-label="Paginación">
+  <button class="page-btn" disabled aria-label="Anterior">‹</button>
+  <button class="page-btn active" aria-current="page">1</button>
+  <button class="page-btn">2</button>
+  <button class="page-btn">3</button>
+  <button class="page-btn" aria-label="Siguiente">›</button>
+</nav>
 
-        <!-- Formulario -->
-        <div class="card"style="margin-bottom:var(--space-6);">
-          <div class="card-header">
-            <h2 class="card-title">Registrar curso</h2>
-            <button class="btn btn-ghost btn-sm">Editar</button>
-          </div>
-          <div class="form-row cols-2" style="margin-bottom:var(--space-5);">
-            <div class="form-group" style="margin-bottom:0;">
-              <div class="form-label">Curso</div>
-              <input type="text" style="padding:var(--space-3) var(--space-4);background:var(--gray-50);border:1px solid var(--border-color);border-radius:var(--border-radius);font-size:var(--text-sm);color:var(--text-primary); width: 100%" />
-            </div>
-            <div class="form-group" style="margin-bottom:0;">
-              <div class="form-label">Docente</div>
-              <input type="text" style="padding:var(--space-3) var(--space-4);background:var(--gray-50);border:1px solid var(--border-color);border-radius:var(--border-radius);font-size:var(--text-sm);color:var(--text-primary); width: 100%" />
-            </div>
-          </div>
-          <div class="form-row cols-2">
-            <div class="form-group" style="margin-bottom:0;">
-              <div class="form-label">Categoria</div>
-              <input type="text" style="padding:var(--space-3) var(--space-4);background:var(--gray-50);border:1px solid var(--border-color);border-radius:var(--border-radius);font-size:var(--text-sm);color:var(--text-primary); width: 100%" />
-            </div>
-            <div class="form-group" style="margin-bottom:0;">
-              <div class="form-label">Inscritos</div>
-              <input type="text" style="padding:var(--space-3) var(--space-4);background:var(--gray-50);border:1px solid var(--border-color);border-radius:var(--border-radius);font-size:var(--text-sm);color:var(--text-primary); width: 100%" />
-            </div>
-          </div>
-          <div class="form-row cols-2">
-            <div class="form-group" style="margin-bottom:0;">
-              <div class="form-label">Precio</div>
-              <input type="text" style="padding:var(--space-3) var(--space-4);background:var(--gray-50);border:1px solid var(--border-color);border-radius:var(--border-radius);font-size:var(--text-sm);color:var(--text-primary); width: 100%" />
-            </div>
-            <div class="form-group" style="margin-bottom:0;">
-              <div class="form-label">Estado</div>
-              <input type="text" style="padding:var(--space-3) var(--space-4);background:var(--gray-50);border:1px solid var(--border-color);border-radius:var(--border-radius);font-size:var(--text-sm);color:var(--text-primary); width: 100%" />
-            </div>
-          </div>
-      </div>
-
-
-        <!-- Tabla de cursos -->
-        <div class="table-wrapper">
-          <table class="table" aria-label="Tabla de gestión de cursos">
-            <thead>
-              <tr>
-                <th scope="col">Curso</th>
-                <th scope="col">Docente</th>
-                <th scope="col">Categoría</th>
-                <th scope="col">Inscritos</th>
-                <th scope="col">Rating</th>
-                <th scope="col">Precio</th>
-                <th scope="col">Estado</th>
-                <th scope="col">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-
-              @for (curso of cursos(); track curso._id) {
-                <tr>
-                  <td>
-                    <div class="user-cell">
-                      <div
-                        style="width:42px;height:42px;background:linear-gradient(135deg,#1a1a2e,#7c3aed);border-radius:var(--border-radius);display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0;"
-                        aria-hidden="true">
-                        ⚡
-                      </div>
-
-                      <div class="user-info">
-                        <div class="name">{{ curso.curso }}</div>
-                        <div class="sub">60 horas · Virtual</div>
-                      </div>
-                    </div>
-                  </td>
-
-                  <td>{{ curso.docente }}</td>
-                  <td>
-                    <span class="badge badge-accent no-dot">{{ curso.categoria }}</span>
-                  </td>
-                  <td>
-                    <strong>{{ curso.inscritos }}</strong>
-                  </td>
-                  <td>⭐ 4.9</td>
-                  <td>
-                    <strong>S/ {{ curso.precio }}</strong>
-                  </td>
-                  <td>
-                    <span class="badge badge-success">{{ curso.estado }}</span>
-                  </td>
-                  <td>
-                    <div class="td-actions">
-                      <button class="btn btn-ghost btn-icon btn-sm" title="Editar" (click)="abrirEditar(curso)">✏️</button>
-
-                      <button class="btn btn-ghost btn-icon btn-sm" title="Desactivar">🔕</button>
-                      <button class="btn btn-ghost btn-icon btn-sm" title="Eliminar" style="color:var(--danger-600);" (click)="eliminarCurso(curso._id, curso.curso)">🗑️</button>
-                    </div>
-                  </td>
-                </tr>
-              } @empty {
-                <tr>
-                  <td colspan="8">No hay cursos registrados</td>
-                </tr>
-              }
-
-            </tbody>
-          </table>
-        </div>
-
-        <nav class="pagination" aria-label="Paginación">
-          <button class="page-btn" disabled aria-label="Anterior">‹</button>
-          <button class="page-btn active" aria-current="page">1</button>
-          <button class="page-btn">2</button>
-          <button class="page-btn">3</button>
-          <button class="page-btn" aria-label="Siguiente">›</button>
-        </nav>
-
-        <!-- 📝 MODAL PARA EDITAR CURSO (NUEVO) -->
+<!-- ✏️ MODAL PARA EDITAR CURSO -->
 @if (mostrarFormularioEdicion()) {
   <div class="modal-overlay" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:1000;">
     <div class="modal-content" style="background:white;padding:2rem;border-radius:8px;max-width:500px;width:100%;">
@@ -232,7 +283,7 @@
           class="btn btn-primary" 
           (click)="guardarEdicion()"
           style="padding:0.5rem 1.5rem;border:none;border-radius:4px;background:#2563eb;color:white;cursor:pointer;">
-          💾 Guardar
+          💾 Guardar Cambios
         </button>
       </div>
     </div>
