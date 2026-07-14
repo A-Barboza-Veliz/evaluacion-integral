@@ -49,4 +49,64 @@ exports.eliminar = async (req, res) => {
       error: error.message
     });
   }
-};
+}; // ← CIERRE CORRECTO DE eliminar (solo un });
+
+// 📊 NUEVO: OBTENER ESTADÍSTICAS PARA EL DASHBOARD
+exports.obtenerEstadisticas = async (req, res) => {
+  try {
+    // 1️⃣ Total de cursos
+    const totalCursos = await Curso.countDocuments();
+    
+    // 2️⃣ Total de inscritos (suma de todos los inscritos)
+    const totalInscritosResult = await Curso.aggregate([
+      { $group: { _id: null, total: { $sum: { $toInt: '$inscritos' } } } }
+    ]);
+    const totalInscritos = totalInscritosResult.length > 0 ? totalInscritosResult[0].total : 0;
+    
+    // 3️⃣ Cursos por categoría
+    const cursosPorCategoria = await Curso.aggregate([
+      { $group: { _id: '$categoria', cantidad: { $sum: 1 } } },
+      { $sort: { cantidad: -1 } }
+    ]);
+    
+    // 4️⃣ Cursos más pedidos (por inscritos)
+    const cursosMasPedidos = await Curso.find()
+      .sort({ inscritos: -1 })
+      .limit(5)
+      .lean();
+    
+    // 5️⃣ Cursos por estado
+    const cursosPorEstado = await Curso.aggregate([
+      { $group: { _id: '$estado', cantidad: { $sum: 1 } } }
+    ]);
+    
+    // 6️⃣ Precio promedio
+    const precioPromedioResult = await Curso.aggregate([
+      { $group: { _id: null, promedio: { $avg: { $toDouble: '$precio' } } } }
+    ]);
+    const promedioPrecio = precioPromedioResult.length > 0 
+      ? Math.round(precioPromedioResult[0].promedio * 100) / 100 
+      : 0;
+
+    // 📤 Enviar respuesta
+    res.json({
+      totalCursos,
+      totalInscritos,
+      cursosPorCategoria: cursosPorCategoria.map(item => ({
+        categoria: item._id,
+        cantidad: item.cantidad
+      })),
+      cursosMasPedidos,
+      cursosPorEstado: cursosPorEstado.map(item => ({
+        estado: item._id,
+        cantidad: item.cantidad
+      })),
+      promedioPrecio
+    });
+  } catch (error) {
+    console.error('Error al obtener estadísticas:', error);
+    res.status(500).json({
+      error: error.message
+    });
+  }
+}; 
