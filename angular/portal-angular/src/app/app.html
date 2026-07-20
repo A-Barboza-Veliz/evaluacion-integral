@@ -1,65 +1,78 @@
-
-
-  <!-- NAVBAR -->
-  <nav class="navbar" role="navigation" aria-label="Navegación administrativa">
-    <div class="container">
-      <a routerLink="/" class="navbar-brand">
-        <div class="brand-icon" aria-hidden="true">🎓</div>
-        <span>Edu<em>Tech</em> <span style="font-size:var(--text-xs);font-weight:700;background:var(--danger-600);color:var(--white);padding:2px 8px;border-radius:var(--border-radius-full);letter-spacing:.5px;">ADMIN</span></span>
-      </a>
-      <ul class="navbar-nav" role="list">
-          <li><a routerLink="/" routerLinkActive="active" class="active" aria-current="page">Inicio</a></li>
-          <li><a routerLink="/cursos" >Cursos actualizado </a></li>
-          <li><a routerLink="/validar">Validar</a></li>
-          <li><a routerLink="/usuario">Usuario</a></li>
-      </ul>
-      <div class="navbar-actions">
-        <div class="navbar-user">
-          <div class="avatar" style="background:linear-gradient(135deg,var(--danger-600),#9333ea);" aria-label="Foto del administrador">AD</div>
-          <span style="font-size:var(--text-sm);font-weight:600;color:var(--gray-700);">Admin</span>
-        </div>
-        <button class="hamburger" id="hamburger" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobile-nav">
-          <span></span><span></span><span></span>
-        </button>
+<!-- NAVBAR -->
+<nav class="navbar" role="navigation" aria-label="Navegación administrativa">
+  <div class="container">
+    <a routerLink="/" class="navbar-brand">
+      <div class="brand-icon" aria-hidden="true">🎓</div>
+      <span>Edu<em>Tech</em></span>
+    </a>
+    <ul class="navbar-nav" role="list">
+      <li><a routerLink="/inicio" routerLinkActive="active" class="active" aria-current="page">Inicio</a></li>
+      <li><a routerLink="/cursos">Cursos</a></li>
+    </ul>
+    <div class="navbar-actions">
+      <div class="navbar-user">
+        <div class="avatar" style="background:linear-gradient(135deg,var(--danger-600),#9333ea);" aria-label="Foto del usuario">AD</div>
+        <span style="font-size:var(--text-sm);font-weight:600;color:var(--gray-700);">{{ usuario?.nombre || 'Usuario' }}</span>
       </div>
+      <button class="hamburger" id="hamburger" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobile-nav">
+        <span></span><span></span><span></span>
+      </button>
     </div>
-  </nav>
-  <div class="mobile-nav" id="mobile-nav">
-    <a routerLink="/" routerLinkActive="active" class="active" aria-current="page">Inicio</a>
-    <a routerLink="/cursos" >Cursos</a>
-    <a routerLink="/validar">Validar</a>
-    <a routerLink="/usuario">usuario</a>
   </div>
+</nav>
 
-  <div class="page-content">
-    <div class="layout-with-sidebar">
+<div class="page-content">
+  <div class="layout-with-sidebar">
 
-      <!-- SIDEBAR -->
-      <aside class="sidebar" id="sidebar" aria-label="Menú de administración">
-        <div class="sidebar-header">
-          <div class="sidebar-user">
-            <div class="avatar" style="background:linear-gradient(135deg,var(--danger-600),#9333ea);" aria-label="Administrador">AD</div>
-            <div class="user-info">
-              <div class="name">Administrador</div>
-              <div class="role">Super Admin</div>
-            </div>
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar" aria-label="Menú de administración">
+      <div class="sidebar-header">
+        <div class="sidebar-user">
+          <div class="avatar" style="background:linear-gradient(135deg,var(--danger-600),#9333ea);" aria-label="Usuario">AD</div>
+          <div class="user-info">
+            <div class="name">{{ usuario?.nombre || 'Usuario' }}</div>
+            <div class="role">{{ usuario?.rol || 'Estudiante' }}</div>
           </div>
-          <div class="sidebar-title">Panel de control</div>
         </div>
-        <nav class="sidebar-nav" aria-label="Navegación administrativa">
-         <a routerLink="/dashboard" routerLinkActive="active" aria-current="page">  <span class="nav-icon" aria-hidden="true">📊</span> Dashboard</a>
-          <div class="sidebar-section-label">Gestión académica</div>
-          <a routerLink="/cursos" ><span class="nav-icon" aria-hidden="true">📚</span> Cursos<span class="sidebar-badge">48</span></a>
-          <a href="admin-estudiantes.html"><span class="nav-icon" aria-hidden="true">👥</span> Estudiantes<span class="sidebar-badge">1240</span></a>
-          <a href="admin-docentes.html"><span class="nav-icon" aria-hidden="true">👨‍🏫</span> Docentes<span class="sidebar-badge">12</span></a>
+        <div class="sidebar-title">Panel de control</div>
+      </div>
+      <nav class="sidebar-nav" aria-label="Navegación administrativa">
+        
+        <!-- ✅ INICIO: VISIBLE PARA TODOS -->
+        <a routerLink="/inicio" routerLinkActive="active" aria-current="page">
+          <span class="nav-icon" aria-hidden="true">🏠</span> Inicio
+        </a>
 
-          <div class="sidebar-section-label">Sistema</div>
-          <a href="login.html"><span class="nav-icon" aria-hidden="true">🚪</span> Cerrar sesión</a>
-        </nav>
-      </aside>
+        <!-- ✅ DASHBOARD: SOLO PARA ADMIN -->
+        @if (usuario?.rol === 'admin') {
+          <a routerLink="/dashboard" routerLinkActive="active">
+            <span class="nav-icon" aria-hidden="true">📊</span> Dashboard
+          </a>
+        }
+
+        <div class="sidebar-section-label">Gestión académica</div>
+        
+        <!-- ✅ CURSOS: VISIBLE PARA TODOS -->
+        <a routerLink="/cursos"><span class="nav-icon" aria-hidden="true">📚</span> Cursos</a>
+        
+        <!-- ✅ DOCENTES: VISIBLE PARA TODOS -->
+        <a routerLink="/docentes"><span class="nav-icon" aria-hidden="true">👨‍🏫</span> Docentes</a>
+        
+        <!-- ✅ ESTUDIANTES: SOLO PARA ADMIN -->
+        @if (usuario?.rol === 'admin') {
+          <a routerLink="/estudiantes"><span class="nav-icon" aria-hidden="true">👥</span> Estudiantes</a>
+        }
+
+        <div class="sidebar-section-label">Sistema</div>
+        <a href="javascript:void(0)" (click)="cerrarSesion()">
+          <span class="nav-icon" aria-hidden="true">🚪</span> Cerrar sesión
+        </a>
+      </nav>
+    </aside>
+
     <main class="main-content">
       <router-outlet></router-outlet>
     </main>
 
   </div>
-  </div>
+</div>

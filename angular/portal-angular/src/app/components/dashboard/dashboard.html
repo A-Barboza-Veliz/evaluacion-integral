@@ -1,149 +1,122 @@
-<nav class="breadcrumb" aria-label="Ruta de navegación">
-  <a routerLink="/">Dashboard</a>
-  <span class="separator" aria-hidden="true">›</span>
-  <span class="current">Resumen general</span>
-</nav>
+<div class="dashboard-container">
 
-<div class="page-header">
-  <div class="page-header-row">
-    <div>
-      <h1 class="page-title">📊 Dashboard</h1>
-      <p class="page-subtitle">Visión general de la plataforma educativa</p>
-    </div>
-    <button class="btn btn-primary" (click)="cargarEstadisticas()">🔄 Actualizar</button>
-  </div>
-</div>
-
-@if (loading()) {
-  <div class="card" style="padding:3rem;text-align:center;">
-    <div style="font-size:2rem;margin-bottom:1rem;">⏳</div>
-    <p style="color:var(--gray-500);">Cargando estadísticas...</p>
-  </div>
-}
-
-@if (error()) {
-  <div class="card" style="padding:2rem;text-align:center;border-color:#fca5a5;background:#fef2f2;">
-    <div style="font-size:2rem;margin-bottom:1rem;">❌</div>
-    <p style="color:var(--danger-600);">{{ error() }}</p>
-    <button class="btn btn-primary" (click)="cargarEstadisticas()" style="margin-top:1rem;">Intentar nuevamente</button>
-  </div>
-}
-
-@if (!loading() && !error() && stats()) {
-  <div class="dashboard-grid">
-    <div class="stat-card">
-      <div class="stat-header">
-        <span class="stat-label">Total de cursos</span>
-        <span class="stat-icon">📚</span>
+  <!-- Header con usuario -->
+  <header class="dashboard-header">
+    <div class="header-content">
+      <h1>📊 Panel de Control</h1>
+      <div class="user-info">
+        <span class="user-name">👤 {{ usuario?.nombre || 'Admin' }}</span>
+        <span class="user-role" [class.is-admin]="usuario?.rol === 'admin'">
+          {{ usuario?.rol || 'Administrador' }}
+        </span>
+        <button class="btn-logout" (click)="cerrarSesion()">🚪 Cerrar sesión</button>
       </div>
-      <div class="stat-value">{{ stats()?.totalCursos || 0 }}</div>
-      <div class="stat-change">Activos: {{ getCantidadPorEstado('Activo') }}</div>
     </div>
+  </header>
 
-    <div class="stat-card">
-      <div class="stat-header">
-        <span class="stat-label">Total de inscritos</span>
-        <span class="stat-icon">👨‍🎓</span>
-      </div>
-      <div class="stat-value">{{ stats()?.totalInscritos || 0 }}</div>
-      <div class="stat-change">Estudiantes registrados</div>
+  <!-- Estado de carga -->
+  @if (loading()) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Cargando estadísticas...</p>
     </div>
+  }
 
-    <div class="stat-card">
-      <div class="stat-header">
-        <span class="stat-label">Precio promedio</span>
-        <span class="stat-icon">💰</span>
-      </div>
-      <div class="stat-value">S/ {{ stats()?.promedioPrecio || 0 }}</div>
-      <div class="stat-change">Por curso</div>
+  <!-- Error -->
+  @if (error()) {
+    <div class="error-state">
+      <p>❌ {{ error() }}</p>
+      <button class="btn-retry" (click)="cargarEstadisticas()">🔄 Reintentar</button>
     </div>
+  }
 
-    <div class="stat-card">
-      <div class="stat-header">
-        <span class="stat-label">Categorías</span>
-        <span class="stat-icon">🏷️</span>
-      </div>
-      <div class="stat-value">{{ stats()?.cursosPorCategoria?.length || 0 }}</div>
-      <div class="stat-change">Diferentes categorías</div>
-    </div>
-  </div>
-
-  <div class="dashboard-sections">
-    <div class="section-card">
-      <div class="section-header">
-        <div>
-          <div class="section-title">📊 Cursos por categoría</div>
-          <div class="section-subtitle">Distribución de cursos por categoría</div>
+  <!-- Tarjetas de estadísticas -->
+  @if (!loading() && !error() && estadisticas()) {
+    <div class="stats-grid">
+      <div class="stat-card stat-cursos">
+        <div class="stat-icon">📚</div>
+        <div class="stat-info">
+          <h3>Total Cursos</h3>
+          <p class="stat-number">{{ getTotalCursos() }}</p>
         </div>
       </div>
 
-      <div class="category-bar-list">
-        @for (item of stats()?.cursosPorCategoria || []; track item.categoria) {
-          <div class="category-bar-item">
-            <span class="category-label">
-              {{ getCategoriaIcon(item.categoria) }}
-              {{ item.categoria }}
-            </span>
-            <div class="category-bar-track">
+      <div class="stat-card stat-inscritos">
+        <div class="stat-icon">👥</div>
+        <div class="stat-info">
+          <h3>Total Inscritos</h3>
+          <p class="stat-number">{{ getTotalInscritos() }}</p>
+        </div>
+      </div>
+
+      <div class="stat-card stat-precio">
+        <div class="stat-icon">💰</div>
+        <div class="stat-info">
+          <h3>Precio Promedio</h3>
+          <p class="stat-number">S/ {{ getPromedioPrecio() }}</p>
+        </div>
+      </div>
+
+      <div class="stat-card stat-categorias">
+        <div class="stat-icon">📂</div>
+        <div class="stat-info">
+          <h3>Categorías</h3>
+          <p class="stat-number">{{ getCursosPorCategoria().length }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gráfico de Cursos por Categoría -->
+    <div class="chart-section">
+      <h2>📊 Cursos por Categoría</h2>
+      <div class="chart-bars">
+        @for (item of getCursosPorCategoria(); track item.categoria) {
+          <div class="bar-item">
+            <div class="bar-label">{{ item.categoria }}</div>
+            <div class="bar-track">
               <div 
-                class="category-bar-fill" 
-                [style.width]="(item.cantidad / (stats()?.totalCursos || 1)) * 100 + '%'"
-                [style.background]="getCategoriaColor(item.categoria)"
-              ></div>
+                class="bar-fill" 
+                [style.width.%]="(item.cantidad / getTotalCursos()) * 100"
+                [style.background]="getColorCategoria(item.categoria)">
+                {{ item.cantidad }}
+              </div>
             </div>
-            <span class="category-count">{{ item.cantidad }}</span>
           </div>
-        } @empty {
-          <p style="color:var(--gray-400);text-align:center;padding:1rem;">No hay datos de categorías</p>
         }
       </div>
     </div>
 
-    <div class="section-card">
-      <div class="section-header">
-        <div>
-          <div class="section-title">🏆 Cursos más pedidos</div>
-          <div class="section-subtitle">Los más populares</div>
-        </div>
-      </div>
-
-      <div class="top-course-list">
-        @for (curso of stats()?.cursosMasPedidos || []; track curso._id) {
-          <div class="top-course-item">
-            <span class="rank">#{{ $index + 1 }}</span>
-            <div class="course-info">
-              <div class="course-name">{{ curso.curso }}</div>
-              <div class="course-detail">{{ curso.docente }} · {{ curso.categoria }}</div>
+    <!-- Cursos Más Pedidos -->
+    <div class="top-cursos-section">
+      <h2>🏆 Cursos Más Populares</h2>
+      <div class="top-cursos-list">
+        @for (curso of getCursosMasPedidos(); track curso._id) {
+          <div class="top-curso-item">
+            <span class="top-position">#{{ $index + 1 }}</span>
+            <div class="top-curso-info">
+              <strong>{{ curso.curso }}</strong>
+              <span class="top-curso-docente">👨‍🏫 {{ curso.docente }}</span>
             </div>
-            <span class="course-inscritos">👨‍🎓 {{ curso.inscritos }}</span>
+            <span class="top-curso-inscritos">👥 {{ curso.inscritos }} inscritos</span>
           </div>
         } @empty {
-          <p style="color:var(--gray-400);text-align:center;padding:1rem;">No hay cursos disponibles</p>
+          <p class="empty-message">No hay cursos registrados</p>
         }
       </div>
     </div>
-  </div>
 
-  <div class="section-card" style="margin-top:var(--space-5);">
-    <div class="section-header">
-      <div>
-        <div class="section-title">📌 Estado de cursos</div>
-        <div class="section-subtitle">Distribución por estado</div>
+    <!-- Cursos por Estado -->
+    <div class="estado-section">
+      <h2>📌 Cursos por Estado</h2>
+      <div class="estado-grid">
+        @for (item of getCursosPorEstado(); track item.estado) {
+          <div class="estado-item">
+            <span class="estado-dot" [style.background]="getColorEstado(item.estado)"></span>
+            <span class="estado-nombre">{{ item.estado }}</span>
+            <span class="estado-cantidad">{{ item.cantidad }}</span>
+          </div>
+        }
       </div>
     </div>
-
-    <div class="status-chip-list">
-      @for (item of stats()?.cursosPorEstado || []; track item.estado) {
-        <div class="status-chip">
-          <span class="dot" [style.background]="getEstadoColor(item.estado)"></span>
-          {{ item.estado }}
-          <span style="font-weight:700;color:var(--text-primary);">
-            {{ item.cantidad }}
-          </span>
-        </div>
-      } @empty {
-        <p style="color:var(--gray-400);">No hay datos de estados</p>
-      }
-    </div>
-  </div>
-}
+  }
+</div>

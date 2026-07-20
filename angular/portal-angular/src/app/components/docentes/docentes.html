@@ -1,0 +1,61 @@
+<div class="docentes-container">
+  <div class="page-header">
+    <h1>👨‍🏫 Gestión de Docentes</h1>
+    <p class="page-subtitle">Lista de docentes registrados en la plataforma</p>
+  </div>
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Cargando docentes...</p>
+    </div>
+  }
+
+  <!-- Error -->
+  @if (error()) {
+    <div class="error-state">
+      <p>❌ {{ error() }}</p>
+      <button class="btn-retry" (click)="cargarDocentes()">🔄 Reintentar</button>
+    </div>
+  }
+
+  <!-- Lista de Docentes -->
+  @if (!loading() && !error()) {
+    <div class="docentes-grid">
+      @for (docente of docentes(); track docente.nombre) {
+        <div class="docente-card">
+          <div class="docente-header">
+            <div class="docente-avatar">
+              <span>{{ docente.nombre.charAt(0).toUpperCase() }}</span>
+            </div>
+            <div class="docente-info">
+              <h3>{{ docente.nombre }}</h3>
+              <span class="docente-categoria">{{ docente.categoria }}</span>
+            </div>
+          </div>
+          <div class="docente-body">
+            <div class="docente-stats">
+              <div class="stat-item">
+                <span class="stat-label">📚 Cursos</span>
+                <span class="stat-value">{{ docente.cursos.length }}</span>
+              </div>
+            </div>
+            <div class="docente-cursos">
+              <p class="cursos-label">Cursos a cargo:</p>
+              <div class="cursos-tags">
+                @for (curso of docente.cursos; track curso) {
+                  <span class="curso-tag">{{ curso }}</span>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      } @empty {
+        <div class="empty-state">
+          <p>📚 No hay docentes registrados</p>
+        </div>
+      }
+    </div>
+  }
+</div>

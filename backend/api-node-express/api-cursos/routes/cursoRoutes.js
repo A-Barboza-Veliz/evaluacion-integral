@@ -1,3 +1,4 @@
+// routes/cursoRoutes.js
 const express = require('express');
 const router = express.Router();
 
@@ -6,8 +7,11 @@ const {
   listar,
   actualizar,
   eliminar,
-  obtenerEstadisticas
+  obtenerEstadisticas,
+  obtener
 } = require('../controllers/cursoController');
+
+// ✅ USAR EL MIDDLEWARE DE TU COMPAÑERO
 const { verificarToken, permitirRoles } = require('../seguridad-web-api/src/middlewares');
 
 router.get('/cursos/stats', verificarToken, permitirRoles('admin'), obtenerEstadisticas);
@@ -16,7 +20,5 @@ router.get('/cursos/:id', obtener);
 router.get('/cursos', listar);
 router.put('/cursos/:id', verificarToken, permitirRoles('admin'), actualizar);
 router.delete('/cursos/:id', verificarToken, permitirRoles('admin'), eliminar);
-
-
 
 module.exports = router;

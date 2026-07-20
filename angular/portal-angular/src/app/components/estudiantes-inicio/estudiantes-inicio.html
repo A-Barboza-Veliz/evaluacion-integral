@@ -1,0 +1,38 @@
+<div class="estudiante-container">
+  <div class="welcome-card">
+    <div class="welcome-icon">🎓</div>
+    <h1>¡Bienvenido, {{ usuario?.nombre || 'Estudiante' }}!</h1>
+    <p class="welcome-subtitle">Has iniciado sesión correctamente en la plataforma educativa.</p>
+    
+    <div class="info-grid">
+      <div class="info-item">
+        <span class="info-icon">📧</span>
+        <div>
+          <p class="info-label">Correo</p>
+          <p class="info-value">{{ usuario?.correo }}</p>
+        </div>
+      </div>
+      <div class="info-item">
+        <span class="info-icon">👤</span>
+        <div>
+          <p class="info-label">Rol</p>
+          <p class="info-value">{{ usuario?.rol || 'Estudiante' }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="quick-actions">
+      <h3>📚 Acciones rápidas</h3>
+      <div class="actions-grid">
+        <a routerLink="/cursos" class="action-card">
+          <span class="action-icon">📖</span>
+          <span>Ver Cursos</span>
+        </a>
+        <a routerLink="/docentes" class="action-card">
+          <span class="action-icon">👨‍🏫</span>
+          <span>Ver Docentes</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

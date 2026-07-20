@@ -1,12 +1,29 @@
-import { Component, signal } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive],
+  standalone: true,
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, CommonModule],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrls: ['./app.css']
 })
-export class App {
-  protected readonly title = signal('portal-angular');
+export class AppComponent implements OnInit {
+  title = 'portal-angular';
+  usuario: any = null;
+
+  ngOnInit(): void {
+    const usuarioData = localStorage.getItem('usuario');
+    if (usuarioData) {
+      this.usuario = JSON.parse(usuarioData);
+      console.log('👤 Usuario en App:', this.usuario);
+    }
+  }
+
+  cerrarSesion(): void {
+    localStorage.removeItem('token');
+    localStorage.removeItem('usuario');
+    window.location.href = 'http://localhost:3001/login';
+  }
 }

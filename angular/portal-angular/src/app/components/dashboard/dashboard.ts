@@ -1,74 +1,137 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DashboardService, DashboardStats } from '../../services/dashboard';
+import { Router } from '@angular/router';
+import { CursosService } from '../../services/cursos';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './dashboard.html',
-  styleUrl: './dashboard.css'
+  styleUrls: ['./dashboard.css']
 })
 export class DashboardComponent implements OnInit {
-  stats = signal<DashboardStats | null>(null);
+  // Estadísticas
+  estadisticas = signal<any>(null);
   loading = signal<boolean>(true);
   error = signal<string | null>(null);
+  
+  // Usuario
+  usuario: any = null;
 
-  private dashboardService = inject(DashboardService);
+  constructor(
+    private router: Router,
+    private cursosService: CursosService
+  ) {}
 
   ngOnInit(): void {
+    // Capturar token de la URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+    const usuarioParam = urlParams.get('usuario');
+
+    if (token && usuarioParam) {
+      localStorage.setItem('token', token);
+      localStorage.setItem('usuario', usuarioParam);
+      window.history.replaceState({}, document.title, '/dashboard');
+      console.log('✅ Token guardado desde URL');
+    }
+
+    // Verificar autenticación
+    const savedToken = localStorage.getItem('token');
+    if (!savedToken) {
+      window.location.href = 'http://localhost:3001/login';
+      return;
+    }
+
+    const usuarioData = localStorage.getItem('usuario');
+    if (usuarioData) {
+      this.usuario = JSON.parse(usuarioData);
+      console.log('👤 Usuario:', this.usuario);
+    }
+
+    // Cargar estadísticas
     this.cargarEstadisticas();
   }
 
   cargarEstadisticas(): void {
     this.loading.set(true);
-    this.dashboardService.getDashboardStats().subscribe({
-      next: (data) => {
-        console.log('📊 Estadísticas:', data);
-        this.stats.set(data);
+    this.error.set(null);
+
+    this.cursosService.getEstadisticas().subscribe({
+      next: (data: any) => {
+        console.log('📊 Estadísticas recibidas:', data);
+        this.estadisticas.set(data);
         this.loading.set(false);
       },
-      error: (error) => {
-        console.error('❌ Error:', error);
+      error: (error: any) => {
+        console.error('❌ Error al cargar estadísticas:', error);
         this.error.set('Error al cargar las estadísticas');
         this.loading.set(false);
       }
     });
   }
 
-  getCategoriaColor(categoria: string): string {
+  cerrarSesion(): void {
+    localStorage.removeItem('token');
+    localStorage.removeItem('usuario');
+    window.location.href = 'http://localhost:3001/login';
+  }
+
+  // ========== FUNCIONES AUXILIARES ==========
+
+  // Total de cursos
+  getTotalCursos(): number {
+    return this.estadisticas()?.totalCursos || 0;
+  }
+
+  // Total de inscritos
+  getTotalInscritos(): number {
+    return this.estadisticas()?.totalInscritos || 0;
+  }
+
+  // Precio promedio
+  getPromedioPrecio(): number {
+    return this.estadisticas()?.promedioPrecio || 0;
+  }
+
+  // Cursos por categoría
+  getCursosPorCategoria(): any[] {
+    return this.estadisticas()?.cursosPorCategoria || [];
+  }
+
+  // Cursos más populares
+  getCursosMasPedidos(): any[] {
+    return this.estadisticas()?.cursosMasPedidos || [];
+  }
+
+  // Cursos por estado
+  getCursosPorEstado(): any[] {
+    return this.estadisticas()?.cursosPorEstado || [];
+  }
+
+  // Color según categoría (para gráfico de barras)
+  getColorCategoria(categoria: string): string {
     const colores: { [key: string]: string } = {
       'Frontend': '#3b82f6',
       'Backend': '#8b5cf6',
-      'Full Stack': '#06b6d4',
+      'Full Stack': '#ec4899',
       'Seguridad': '#ef4444',
-      'DevOps': '#f59e0b'
+      'Datos': '#10b981',
+      'IA': '#f59e0b',
+      'DevOps': '#06b6d4',
+      'Diseño': '#f472b6'
     };
     return colores[categoria] || '#6b7280';
   }
 
-  getEstadoColor(estado: string): string {
+  // Color según estado (para los dots)
+  getColorEstado(estado: string): string {
     const colores: { [key: string]: string } = {
-      'Activo': '#22c55e',
+      'Activo': '#10b981',
       'Inactivo': '#ef4444',
       'Borrador': '#f59e0b'
     };
     return colores[estado] || '#6b7280';
-  }
-
-  getCategoriaIcon(categoria: string): string {
-    const iconos: { [key: string]: string } = {
-      'Frontend': '🎨',
-      'Backend': '⚙️',
-      'Full Stack': '🚀',
-      'Seguridad': '🔒',
-      'DevOps': '☁️'
-    };
-    return iconos[categoria] || '📚';
-  }
-
-  getCantidadPorEstado(estado: string): number {
-    const estadoData = this.stats()?.cursosPorEstado?.find(e => e.estado === estado);
-    return estadoData?.cantidad || 0;
   }
 }

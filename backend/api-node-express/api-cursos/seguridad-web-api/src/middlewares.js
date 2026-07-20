@@ -9,7 +9,7 @@ function verificarToken(req, res, next) {
   }
 
   try {
-    const usuario = jwt.verify(token, process.env.JWT_SECRET);
+    const usuario = jwt.verify(token, process.env.JWT_SECRET || 'mi_secreto_super_seguro');
     req.user = usuario;
     next();
   } catch (error) {
@@ -22,7 +22,11 @@ function permitirRoles(...rolesPermitidos) {
     const rolUsuario = req.user?.rol;
 
     if (!rolesPermitidos.includes(rolUsuario)) {
-      return res.status(403).json({ message: 'No tienes permisos para acceder a esta ruta' });
+      return res.status(403).json({ 
+        message: 'No tienes permisos para acceder a esta ruta',
+        required: rolesPermitidos,
+        actual: rolUsuario 
+      });
     }
 
     next();

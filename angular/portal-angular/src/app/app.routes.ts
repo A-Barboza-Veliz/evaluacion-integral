@@ -1,9 +1,16 @@
 import { Routes } from '@angular/router';
-import { Cursos } from './components/cursos/cursos';
 import { DashboardComponent } from './components/dashboard/dashboard';
+import { CursosComponent } from './components/cursos/cursos';
+import { DocentesComponent } from './components/docentes/docentes';
+import { EstudiantesComponent } from './components/estudiantes/estudiantes';
+import { EstudiantesInicioComponent } from './components/estudiantes-inicio/estudiantes-inicio';
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/dashboard', pathMatch: 'full' },  // ← Redirige a dashboard
-  { path: 'dashboard', component: DashboardComponent },        // ← NUEVA RUTA
-  { path: 'cursos', component: Cursos },
+  { path: '', redirectTo: '/inicio', pathMatch: 'full' },
+  { path: 'inicio', component: EstudiantesInicioComponent },
+  { path: 'dashboard', component: DashboardComponent },
+  { path: 'cursos', component: CursosComponent },
+  { path: 'docentes', component: DocentesComponent },
+  { path: 'estudiantes', component: EstudiantesComponent },
+  { path: '**', redirectTo: '/inicio' }
 ];

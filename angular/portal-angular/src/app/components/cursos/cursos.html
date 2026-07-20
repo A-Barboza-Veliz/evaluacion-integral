@@ -10,7 +10,6 @@
       <h1 class="page-title">Gestión de cursos</h1>
       <p class="page-subtitle">Administra el catálogo completo de cursos de la plataforma.</p>
     </div>
-    <!-- 🔽 CAMBIO 1: Botón "Nuevo curso" ahora llama a limpiarFormulario() -->
     <button class="btn btn-primary" (click)="limpiarFormulario()">+ Nuevo curso</button>
   </div>
 </div>
@@ -38,21 +37,19 @@
   </div>
 </div>
 
-<!-- 🔽 CAMBIO 2: FORMULARIO PARA CREAR CURSO (AHORA CON BINDINGS) -->
+<!-- FORMULARIO PARA CREAR CURSO -->
 <div class="card" style="margin-bottom:var(--space-6);">
   <div class="card-header">
     <h2 class="card-title">📝 Registrar curso</h2>
-    <!-- Botón "Crear curso" ahora llama a guardarNuevoCurso() -->
     <button class="btn btn-primary btn-sm" (click)="guardarNuevoCurso()">💾 Crear curso</button>
   </div>
   
   <div class="form-row cols-2" style="margin-bottom:var(--space-5);">
     <div class="form-group" style="margin-bottom:0;">
       <div class="form-label">Curso *</div>
-      <!-- 🔽 CAMBIO 3: value y input para enlazar con nuevoCurso.curso -->
       <input 
         type="text" 
-        [value]="nuevoCurso.curso"
+        [value]="nuevoCurso().curso"
         (input)="actualizarNuevoCurso('curso', $any($event.target).value)"
         placeholder="Ej: Angular Avanzado"
         style="padding:var(--space-3) var(--space-4);background:var(--gray-50);border:1px solid var(--border-color);border-radius:var(--border-radius);font-size:var(--text-sm);color:var(--text-primary); width: 100%" 
@@ -60,10 +57,9 @@
     </div>
     <div class="form-group" style="margin-bottom:0;">
       <div class="form-label">Docente *</div>
-      <!-- 🔽 CAMBIO 4: value y input para enlazar con nuevoCurso.docente -->
       <input 
         type="text" 
-        [value]="nuevoCurso.docente"
+        [value]="nuevoCurso().docente"
         (input)="actualizarNuevoCurso('docente', $any($event.target).value)"
         placeholder="Ej: Juan Pérez"
         style="padding:var(--space-3) var(--space-4);background:var(--gray-50);border:1px solid var(--border-color);border-radius:var(--border-radius);font-size:var(--text-sm);color:var(--text-primary); width: 100%" 
@@ -74,9 +70,8 @@
   <div class="form-row cols-2">
     <div class="form-group" style="margin-bottom:0;">
       <div class="form-label">Categoría</div>
-      <!-- 🔽 CAMBIO 5: Select enlazado con nuevoCurso.categoria -->
       <select 
-        [value]="nuevoCurso.categoria"
+        [value]="nuevoCurso().categoria"
         (change)="actualizarNuevoCurso('categoria', $any($event.target).value)"
         style="padding:var(--space-3) var(--space-4);background:var(--gray-50);border:1px solid var(--border-color);border-radius:var(--border-radius);font-size:var(--text-sm);color:var(--text-primary); width: 100%"
       >
@@ -89,10 +84,9 @@
     </div>
     <div class="form-group" style="margin-bottom:0;">
       <div class="form-label">Inscritos</div>
-      <!-- 🔽 CAMBIO 6: Input numérico enlazado con nuevoCurso.inscritos -->
       <input 
         type="number" 
-        [value]="nuevoCurso.inscritos"
+        [value]="nuevoCurso().inscritos"
         (input)="actualizarNuevoCurso('inscritos', $any($event.target).value)"
         placeholder="0"
         style="padding:var(--space-3) var(--space-4);background:var(--gray-50);border:1px solid var(--border-color);border-radius:var(--border-radius);font-size:var(--text-sm);color:var(--text-primary); width: 100%" 
@@ -103,10 +97,9 @@
   <div class="form-row cols-2">
     <div class="form-group" style="margin-bottom:0;">
       <div class="form-label">Precio (S/)</div>
-      <!-- 🔽 CAMBIO 7: Input numérico con step enlazado con nuevoCurso.precio -->
       <input 
         type="number" 
-        [value]="nuevoCurso.precio"
+        [value]="nuevoCurso().precio"
         (input)="actualizarNuevoCurso('precio', $any($event.target).value)"
         placeholder="0.00"
         step="0.01"
@@ -115,9 +108,8 @@
     </div>
     <div class="form-group" style="margin-bottom:0;">
       <div class="form-label">Estado</div>
-      <!-- 🔽 CAMBIO 8: Select enlazado con nuevoCurso.estado -->
       <select 
-        [value]="nuevoCurso.estado"
+        [value]="nuevoCurso().estado"
         (change)="actualizarNuevoCurso('estado', $any($event.target).value)"
         style="padding:var(--space-3) var(--space-4);background:var(--gray-50);border:1px solid var(--border-color);border-radius:var(--border-radius);font-size:var(--text-sm);color:var(--text-primary); width: 100%"
       >
@@ -129,7 +121,7 @@
   </div>
 </div>
 
-<!-- 📊 TABLA DE CURSOS -->
+<!-- TABLA DE CURSOS -->
 <div class="table-wrapper">
   <table class="table" aria-label="Tabla de gestión de cursos">
     <thead>
@@ -194,7 +186,7 @@
   </table>
 </div>
 
-<!-- 📄 PAGINACIÓN -->
+<!-- PAGINACIÓN -->
 <nav class="pagination" aria-label="Paginación">
   <button class="page-btn" disabled aria-label="Anterior">‹</button>
   <button class="page-btn active" aria-current="page">1</button>
@@ -203,7 +195,7 @@
   <button class="page-btn" aria-label="Siguiente">›</button>
 </nav>
 
-<!-- ✏️ MODAL PARA EDITAR CURSO -->
+<!-- MODAL PARA EDITAR CURSO -->
 @if (mostrarFormularioEdicion()) {
   <div class="modal-overlay" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:1000;">
     <div class="modal-content" style="background:white;padding:2rem;border-radius:8px;max-width:500px;width:100%;">

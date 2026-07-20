@@ -1,0 +1,85 @@
+<!-- components/estudiantes/estudiantes.html -->
+<div class="estudiantes-container">
+  <div class="page-header">
+    <div>
+      <h1>👥 Gestión de Estudiantes</h1>
+      <p class="page-subtitle">Lista de estudiantes registrados en la plataforma</p>
+    </div>
+    <div class="header-stats">
+      <span>👤 Total: {{ getTotalEstudiantes() }}</span>
+    </div>
+  </div>
+
+  <!-- Barra de búsqueda -->
+  <div class="search-bar">
+    <div class="search-input-wrapper">
+      <span class="search-icon">🔍</span>
+      <input 
+        type="text" 
+        placeholder="Buscar por nombre o correo..." 
+        [value]="filtro()"
+        (input)="filtro.set($any($event.target).value)"
+        class="search-input"
+      />
+    </div>
+  </div>
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Cargando estudiantes...</p>
+    </div>
+  }
+
+  <!-- Error -->
+  @if (error()) {
+    <div class="error-state">
+      <p>❌ {{ error() }}</p>
+      <button class="btn-retry" (click)="cargarEstudiantes()">🔄 Reintentar</button>
+    </div>
+  }
+
+  <!-- Tabla de Estudiantes -->
+  @if (!loading() && !error()) {
+    <div class="table-wrapper">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Nombre</th>
+            <th>Correo</th>
+            <th>Rol</th>
+            <th>Fecha Registro</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (estudiante of getEstudiantesFiltrados(); track estudiante._id) {
+            <tr>
+              <td>{{ $index + 1 }}</td>
+              <td>
+                <div class="user-cell">
+                  <div class="user-avatar">
+                    {{ estudiante.nombre.charAt(0).toUpperCase() }}
+                  </div>
+                  {{ estudiante.nombre }}
+                </div>
+              </td>
+              <td>{{ estudiante.correo }}</td>
+              <td>
+                <span class="badge badge-estudiante">📘 Estudiante</span>
+              </td>
+              <td>{{ estudiante.createdAt | date:'dd/MM/yyyy' }}</td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="5" class="empty-row">
+                <p>📚 No hay estudiantes registrados</p>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>
