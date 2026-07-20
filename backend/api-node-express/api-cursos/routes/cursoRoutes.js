@@ -6,17 +6,16 @@ const {
   listar,
   actualizar,
   eliminar,
-  obtenerEstadisticas  // ← NUEVO: importar el método
+  obtenerEstadisticas
 } = require('../controllers/cursoController');
+const { verificarToken, permitirRoles } = require('../seguridad-web-api/src/middlewares');
 
-// 📌 NUEVA RUTA: Estadísticas del dashboard
-router.get('/cursos/stats', obtenerEstadisticas);
-
-// 📌 Rutas existentes
-router.post('/cursos', crear);
+router.get('/cursos/stats', verificarToken, permitirRoles('admin'), obtenerEstadisticas);
+router.post('/cursos', verificarToken, permitirRoles('admin'), crear);
+router.get('/cursos/:id', obtener);
 router.get('/cursos', listar);
-router.put('/cursos/:id', actualizar);
-router.delete('/cursos/:id', eliminar);
+router.put('/cursos/:id', verificarToken, permitirRoles('admin'), actualizar);
+router.delete('/cursos/:id', verificarToken, permitirRoles('admin'), eliminar);
 
 
 

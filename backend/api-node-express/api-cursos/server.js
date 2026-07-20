@@ -6,19 +6,25 @@ const cors = require('cors');
 const helmet = require('helmet');
 require('dotenv').config();
 
-const conectarDB = require('./config/database');
+const { conectarDB } = require('./config/database');
 const routes = require('./routes/cursoRoutes');
+const authRoutes = require('./routes/authRoutes');
 
 const app = express();
 
 app.use(helmet());
-app.use(cors());
+app.use(cors({ origin: true, credentials: true }));
 app.use(express.json({ limit: '10kb' }));
+
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok', mensaje: 'API de cursos funcionando' });
+});
+
+app.use('/api', routes);
+app.use('/api/auth', authRoutes);
 
 async function iniciarServidor() {
   await conectarDB();
-
-  app.use('/api', routes);
 
   const PORT = process.env.PORT || 3000;
 

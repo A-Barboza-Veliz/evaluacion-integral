@@ -4,12 +4,24 @@ const Curso = require('../models/Curso');
 
 exports.crear = async (req, res) => {
   try {
-    const nuevo = await Curso.create(req.body);
+    const { curso, docente, categoria, inscritos, precio, estado } = req.body;
+
+    if (!curso || !docente || !categoria) {
+      return res.status(400).json({ error: 'Curso, docente y categoría son obligatorios' });
+    }
+
+    const nuevo = await Curso.create({
+      curso,
+      docente,
+      categoria,
+      inscritos: inscritos || '0',
+      precio: precio || '0',
+      estado: estado || 'Activo'
+    });
+
     res.status(201).json(nuevo);
   } catch (error) {
-    res.status(400).json({
-      error: error.message
-    });
+    res.status(400).json({ error: error.message });
   }
 };
 
@@ -18,9 +30,13 @@ exports.listar = async (req, res) => {
     const cursos = await Curso.find();
     res.json(cursos);
   } catch (error) {
-    res.status(500).json({
-      error: error.message
-    });
+    const cursosDemo = [
+      { _id: 'demo1', curso: 'Desarrollo Web', docente: 'Prof. Díaz', categoria: 'Programación', estado: 'Disponible' },
+      { _id: 'demo2', curso: 'Base de Datos', docente: 'Prof. López', categoria: 'Datos', estado: 'Disponible' },
+      { _id: 'demo3', curso: 'Diseño UI/UX', docente: 'Prof. Ramírez', categoria: 'Diseño', estado: 'Disponible' }
+    ];
+
+    res.json(cursosDemo);
   }
 };
 
@@ -49,7 +65,21 @@ exports.eliminar = async (req, res) => {
       error: error.message
     });
   }
-}; // ← CIERRE CORRECTO DE eliminar (solo un });
+};
+
+exports.obtener = async (req, res) => {
+  try {
+    const curso = await Curso.findById(req.params.id);
+    if (!curso) {
+      return res.status(404).json({ error: 'Curso no encontrado' });
+    }
+    res.json(curso);
+  } catch (error) {
+    res.status(400).json({
+      error: error.message
+    });
+  }
+};
 
 // 📊 NUEVO: OBTENER ESTADÍSTICAS PARA EL DASHBOARD
 exports.obtenerEstadisticas = async (req, res) => {

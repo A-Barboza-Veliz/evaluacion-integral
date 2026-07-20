@@ -2,24 +2,24 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
 function generarToken(usuario) {
-    return jwt.sign(
-        { id: usuario.id, rol: usuario.rol },
-        process.env.JWT_SECRET,
-        { expiresIn: '1h' }
-    );
+  return jwt.sign(
+    { id: usuario.id, rol: usuario.rol },
+    process.env.JWT_SECRET,
+    { expiresIn: '1h' }
+  );
 }
 
 function crearHash(password) {
-    const salt = bcrypt.genSaltSync(10);
-    return bcrypt.hashSync(password, salt);
+  const salt = bcrypt.genSaltSync(10);
+  return bcrypt.hashSync(password, salt);
 }
 
-function comprarPassword(passwordIngresado, hasGuardado) {
-    return bcrypt.compareSync(passwordIngresado, hasGuardado);
+function comprarPassword(passwordIngresado, passwordGuardado) {
+  return bcrypt.compareSync(passwordIngresado, passwordGuardado);
 }
 
 module.exports = {
-    generarToken,
-    crearHash,
-    comprarPassword
+  generarToken,
+  crearHash,
+  comprarPassword
 };
