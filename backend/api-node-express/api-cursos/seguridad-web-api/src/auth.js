@@ -1,19 +1,25 @@
-import jwt from "jsonwebtoken";
-import bycrypt from "bcryptjs";
-export function generarToken(usuario) {
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
-    return jwt  . sign ( 
-        { id: usuario.id , rol: usuario.rol },
+function generarToken(usuario) {
+    return jwt.sign(
+        { id: usuario.id, rol: usuario.rol },
         process.env.JWT_SECRET,
         { expiresIn: '1h' }
     );
 }
 
-export function crearHash(password) {
+function crearHash(password) {
     const salt = bcrypt.genSaltSync(10);
-    const hash = bcrypt.hashSync(password, salt);
-    return hash;
+    return bcrypt.hashSync(password, salt);
 }
 
+function comprarPassword(passwordIngresado, hasGuardado) {
+    return bcrypt.compareSync(passwordIngresado, hasGuardado);
+}
 
-export function comprarPassword(passwordIngresado,hasGuardado ) {}
+module.exports = {
+    generarToken,
+    crearHash,
+    comprarPassword
+};
