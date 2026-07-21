@@ -8,35 +8,8 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const usuarioData = localStorage.getItem('usuario');
-    
-    if (token && usuarioData) {
-      try {
-        const usuario = JSON.parse(usuarioData);
-        const usuarioEncoded = encodeURIComponent(usuarioData);
-        
-        const formatUrl = (url?: string) => {
-          if (!url) return 'http://localhost:4200';
-          const clean = url.trim().replace(/\/$/, '');
-          return clean.startsWith('http://') || clean.startsWith('https://') ? clean : `https://${clean}`;
-        };
-
-        const adminUrl = formatUrl(process.env.NEXT_PUBLIC_ADMIN_URL);
-        const studentUrl = formatUrl(process.env.NEXT_PUBLIC_STUDENT_URL);
-
-        if (usuario.rol === 'admin') {
-          window.location.href = `${adminUrl}/dashboard?token=${token}&usuario=${usuarioEncoded}`;
-        } else {
-          window.location.href = `${studentUrl}/inicio?token=${token}&usuario=${usuarioEncoded}`;
-        }
-      } catch (error) {
-        console.error('Error al parsear usuario:', error);
-        router.push('/login');
-      }
-    } else {
-      router.push('/login');
-    }
+    // Redirigir siempre a la pantalla de login limpia
+    router.push('/login');
   }, [router]);
 
   return (

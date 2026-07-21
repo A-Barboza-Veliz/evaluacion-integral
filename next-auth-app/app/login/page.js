@@ -1,7 +1,7 @@
 // app/login/page.js
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 export default function LoginPage() {
@@ -9,6 +9,12 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    // Limpiar cualquier sesion guardada previamente para entrar limpio
+    localStorage.removeItem('token');
+    localStorage.removeItem('usuario');
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
