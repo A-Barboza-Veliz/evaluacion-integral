@@ -40,7 +40,10 @@ export class DashboardComponent implements OnInit {
     // Verificar autenticación
     const savedToken = localStorage.getItem('token');
     if (!savedToken) {
-      window.location.href = 'http://localhost:3001/login';
+      const loginUrl = (typeof window !== 'undefined' && !window.location.hostname.includes('localhost'))
+        ? 'https://evaluacion-integral-auth.vercel.app/login'
+        : 'http://localhost:3001/login';
+      window.location.href = loginUrl;
       return;
     }
 

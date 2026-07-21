@@ -8,7 +8,15 @@ import { Observable } from 'rxjs';
 })
 export class CursosService {
 
-  private apiUrl = 'http://localhost:3000/api';
+  private get apiUrl(): string {
+    if (typeof window !== 'undefined' && (window as any).API_URL) {
+      return (window as any).API_URL;
+    }
+    if (typeof window !== 'undefined' && !window.location.hostname.includes('localhost')) {
+      return 'https://evaluacion-integral-api.onrender.com/api';
+    }
+    return 'http://localhost:3000/api';
+  }
 
   constructor(private http: HttpClient) {}
 
