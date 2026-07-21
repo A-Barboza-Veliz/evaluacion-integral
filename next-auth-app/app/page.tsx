@@ -16,8 +16,14 @@ export default function Home() {
         const usuario = JSON.parse(usuarioData);
         const usuarioEncoded = encodeURIComponent(usuarioData);
         
-        const adminUrl = (process.env.NEXT_PUBLIC_ADMIN_URL || 'http://localhost:4200').replace(/\/$/, '');
-        const studentUrl = (process.env.NEXT_PUBLIC_STUDENT_URL || 'http://localhost:4200').replace(/\/$/, '');
+        const formatUrl = (url?: string) => {
+          if (!url) return 'http://localhost:4200';
+          const clean = url.trim().replace(/\/$/, '');
+          return clean.startsWith('http://') || clean.startsWith('https://') ? clean : `https://${clean}`;
+        };
+
+        const adminUrl = formatUrl(process.env.NEXT_PUBLIC_ADMIN_URL);
+        const studentUrl = formatUrl(process.env.NEXT_PUBLIC_STUDENT_URL);
 
         if (usuario.rol === 'admin') {
           window.location.href = `${adminUrl}/dashboard?token=${token}&usuario=${usuarioEncoded}`;

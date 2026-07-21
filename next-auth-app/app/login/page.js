@@ -42,8 +42,15 @@ export default function LoginPage() {
       // ✅ REDIRECCIÓN SEGÚN ROL
       const usuario = data.usuario;
       const usuarioEncoded = encodeURIComponent(JSON.stringify(usuario));
-      const adminUrl = (process.env.NEXT_PUBLIC_ADMIN_URL || 'http://localhost:4200').replace(/\/$/, '');
-      const studentUrl = (process.env.NEXT_PUBLIC_STUDENT_URL || 'http://localhost:4200').replace(/\/$/, '');
+
+      const formatUrl = (url) => {
+        if (!url) return 'http://localhost:4200';
+        const clean = url.trim().replace(/\/$/, '');
+        return clean.startsWith('http://') || clean.startsWith('https://') ? clean : `https://${clean}`;
+      };
+
+      const adminUrl = formatUrl(process.env.NEXT_PUBLIC_ADMIN_URL);
+      const studentUrl = formatUrl(process.env.NEXT_PUBLIC_STUDENT_URL);
 
       if (usuario.rol === 'admin') {
         // Admin → Dashboard
