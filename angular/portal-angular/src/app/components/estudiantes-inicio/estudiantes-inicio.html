@@ -1,4 +1,19 @@
 <div class="estudiante-container">
+
+  <!-- 📢 TARJETA DE RECORDATORIO DE MATRÍCULA -->
+  <div style="background: linear-gradient(135deg, #fffbe6, #fef3c7); border: 2px solid #f59e0b; border-radius: 1rem; padding: 1.75rem; text-align: center; margin-bottom: 1.5rem; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15);">
+    <div style="font-size: 2.8rem; margin-bottom: 0.5rem;">⚠️📌</div>
+    <h2 style="color: #92400e; font-weight: 800; font-size: 1.6rem; margin-bottom: 0.5rem;">
+      ¡RECORDATORIO IMPORTANTE!
+    </h2>
+    <p style="color: #78350f; font-size: 1.15rem; font-weight: 600; margin-bottom: 1.25rem;">
+      No olvidar matricularse en sus asignaturas para el periodo lectivo.
+    </p>
+    <a routerLink="/cursos" style="display: inline-block; background-color: #d97706; color: white; padding: 0.75rem 1.75rem; border-radius: 0.5rem; font-size: 1rem; font-weight: 700; text-decoration: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+      📚 Ir a Matricularme Ahora 🚀
+    </a>
+  </div>
+
   <div class="welcome-card">
     <div class="welcome-icon">🎓</div>
     <h1>¡Bienvenido, {{ usuario?.nombre || 'Estudiante' }}!</h1>
@@ -18,20 +33,6 @@
           <p class="info-label">Rol</p>
           <p class="info-value">{{ usuario?.rol || 'Estudiante' }}</p>
         </div>
-      </div>
-    </div>
-
-    <div class="quick-actions">
-      <h3>📚 Acciones rápidas</h3>
-      <div class="actions-grid">
-        <a routerLink="/cursos" class="action-card">
-          <span class="action-icon">📖</span>
-          <span>Ver Cursos</span>
-        </a>
-        <a routerLink="/docentes" class="action-card">
-          <span class="action-icon">👨‍🏫</span>
-          <span>Ver Docentes</span>
-        </a>
       </div>
     </div>
   </div>
