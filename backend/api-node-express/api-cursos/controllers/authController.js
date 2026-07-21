@@ -19,7 +19,10 @@ exports.registrar = async (req, res) => {
   }
 
   try {
-    const { nombre, correo, password, rol } = req.body;
+    const nombre = req.body.nombre || req.body.name;
+    const correo = req.body.correo || req.body.email;
+    const password = req.body.password;
+    const rol = req.body.rol || req.body.role || 'estudiante';
 
     if (!nombre || !correo || !password) {
       console.log('❌ Faltan campos obligatorios');
@@ -59,7 +62,8 @@ exports.registrar = async (req, res) => {
 
 exports.login = async (req, res) => {
   try {
-    const { correo, password } = req.body;
+    const correo = req.body.correo || req.body.email;
+    const password = req.body.password;
 
     if (!estaConectado()) {
       if (correo !== usuarioDemo.correo) {

@@ -26,13 +26,19 @@ export default function Register() {
     setSuccess('');
 
     try {
-      await API.post('/auth/register', formData);
+      const payload = {
+        nombre: formData.name,
+        correo: formData.email,
+        password: formData.password,
+        rol: formData.role || 'estudiante'
+      };
+      await API.post('/auth/register', payload);
       setSuccess('¡Registro exitoso! Redirigiendo al inicio de sesión...');
       setTimeout(() => {
         navigate('/login');
       }, 2000);
     } catch (err) {
-      setError(err.response?.data?.message || 'Error al registrar usuario');
+      setError(err.response?.data?.error || err.response?.data?.message || 'Error al registrar usuario');
     }
   };
 

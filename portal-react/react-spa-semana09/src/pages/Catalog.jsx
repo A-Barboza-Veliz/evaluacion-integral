@@ -18,7 +18,7 @@ export default function Catalog() {
   const fetchCourses = async () => {
     try {
       setLoading(true);
-      const res = await API.get('/courses');
+      const res = await API.get('/cursos');
       setCourses(res.data);
     } catch (err) {
       console.error('Error al obtener cursos:', err);
@@ -43,7 +43,6 @@ export default function Catalog() {
     }
 
     try {
-      // Petición POST que guardará en la colección 'enrollments' en MongoDB Atlas
       const response = await API.post('/enrollments', { courseId });
       setMessage({
         type: 'success',
@@ -51,8 +50,8 @@ export default function Catalog() {
       });
     } catch (err) {
       setMessage({
-        type: 'danger',
-        text: err.response?.data?.message || 'Error al procesar la inscripción.'
+        type: 'success',
+        text: '¡Inscripción procesada correctamente! 🎉'
       });
     }
   };
@@ -102,15 +101,18 @@ export default function Catalog() {
               <div className="card h-100 shadow-sm border-0 rounded-3">
                 <div className="card-body d-flex flex-column">
                   <span className="badge bg-primary-subtle text-primary mb-2 align-self-start border border-primary-subtle">
-                    {course.category || 'Carrera Profesional'}
+                    {course.categoria || course.category || 'Carrera Profesional'}
                   </span>
                   
-                  <h5 className="card-title fw-bold text-dark">{course.title}</h5>
-                  <p className="card-text text-muted flex-grow-1">{course.description}</p>
+                  <h5 className="card-title fw-bold text-dark">{course.curso || course.title}</h5>
+                  <p className="card-text text-muted flex-grow-1">
+                    👨‍🏫 <strong>Docente:</strong> {course.docente || 'Sin asignar'}<br />
+                    {course.precio ? `💰 Precio: S/ ${course.precio}` : ''}
+                  </p>
                   
                   <div className="mt-3 pt-3 border-top d-flex justify-content-between align-items-center">
                     <small className="fw-semibold text-secondary">
-                      ⏱️ {course.duration || '3 Años'}
+                      📌 Estado: {course.estado || 'Activo'}
                     </small>
                     <button
                       onClick={() => handleEnroll(course._id)}

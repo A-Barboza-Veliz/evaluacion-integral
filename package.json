@@ -1,6 +1,21 @@
 {
+  "name": "evaluacion-integral",
+  "version": "1.0.0",
+  "description": "Plataforma de Gestión de Cursos e Inscripciones",
+  "scripts": {
+    "start:backend": "npm --prefix backend/api-node-express/api-cursos start",
+    "start:angular": "npm --prefix angular/portal-angular start",
+    "start:react": "npm --prefix portal-react/react-spa-semana09 run dev",
+    "start:auth": "npm --prefix next-auth-app run dev",
+    "start:next": "npm --prefix mi-proyecto-next run dev",
+    "dev": "concurrently -n \"BACKEND,ANGULAR,REACT,AUTH\" -c \"cyan.bold,magenta.bold,yellow.bold,blue.bold\" \"npm run start:backend\" \"npm run start:angular\" \"npm run start:react\" \"npm run start:auth\"",
+    "dev:all": "concurrently -n \"BACKEND,ANGULAR,REACT,AUTH,NEXT\" -c \"cyan.bold,magenta.bold,yellow.bold,blue.bold,green.bold\" \"npm run start:backend\" \"npm run start:angular\" \"npm run start:react\" \"npm run start:auth\" \"npm run start:next\""
+  },
   "dependencies": {
     "axios": "^1.18.1",
     "react-router-dom": "^7.18.1"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
   }
 }
