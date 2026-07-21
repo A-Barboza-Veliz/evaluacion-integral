@@ -42,13 +42,15 @@ export default function LoginPage() {
       // ✅ REDIRECCIÓN SEGÚN ROL
       const usuario = data.usuario;
       const usuarioEncoded = encodeURIComponent(JSON.stringify(usuario));
+      const adminUrl = (process.env.NEXT_PUBLIC_ADMIN_URL || 'http://localhost:4200').replace(/\/$/, '');
+      const studentUrl = (process.env.NEXT_PUBLIC_STUDENT_URL || 'http://localhost:4200').replace(/\/$/, '');
 
       if (usuario.rol === 'admin') {
         // Admin → Dashboard
-        window.location.href = `http://localhost:4200/dashboard?token=${data.token}&usuario=${usuarioEncoded}`;
+        window.location.href = `${adminUrl}/dashboard?token=${data.token}&usuario=${usuarioEncoded}`;
       } else {
         // Estudiante → Inicio
-        window.location.href = `http://localhost:4200/inicio?token=${data.token}&usuario=${usuarioEncoded}`;
+        window.location.href = `${studentUrl}/inicio?token=${data.token}&usuario=${usuarioEncoded}`;
       }
 
     } catch (error) {

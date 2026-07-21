@@ -16,10 +16,13 @@ export default function Home() {
         const usuario = JSON.parse(usuarioData);
         const usuarioEncoded = encodeURIComponent(usuarioData);
         
+        const adminUrl = (process.env.NEXT_PUBLIC_ADMIN_URL || 'http://localhost:4200').replace(/\/$/, '');
+        const studentUrl = (process.env.NEXT_PUBLIC_STUDENT_URL || 'http://localhost:4200').replace(/\/$/, '');
+
         if (usuario.rol === 'admin') {
-          window.location.href = `http://localhost:4200/dashboard?token=${token}&usuario=${usuarioEncoded}`;
+          window.location.href = `${adminUrl}/dashboard?token=${token}&usuario=${usuarioEncoded}`;
         } else {
-          window.location.href = `http://localhost:4200/inicio?token=${token}&usuario=${usuarioEncoded}`;
+          window.location.href = `${studentUrl}/inicio?token=${token}&usuario=${usuarioEncoded}`;
         }
       } catch (error) {
         console.error('Error al parsear usuario:', error);
