@@ -14,10 +14,28 @@ export class AppComponent implements OnInit {
   usuario: any = null;
 
   ngOnInit(): void {
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+    const usuarioParam = urlParams.get('usuario');
+
+    if (token && usuarioParam) {
+      try {
+        const decodedUser = decodeURIComponent(usuarioParam);
+        localStorage.setItem('token', token);
+        localStorage.setItem('usuario', decodedUser);
+      } catch (e) {
+        console.error('Error al decodificar usuarioParam:', e);
+      }
+    }
+
     const usuarioData = localStorage.getItem('usuario');
     if (usuarioData) {
-      this.usuario = JSON.parse(usuarioData);
-      console.log('👤 Usuario en App:', this.usuario);
+      try {
+        this.usuario = JSON.parse(usuarioData);
+        console.log('👤 Usuario en App:', this.usuario);
+      } catch (e) {
+        console.error('Error al parsear usuarioData:', e);
+      }
     }
   }
 
