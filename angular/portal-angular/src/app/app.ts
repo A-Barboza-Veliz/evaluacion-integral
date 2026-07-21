@@ -39,6 +39,10 @@ export class AppComponent implements OnInit {
     }
   }
 
+  esAdmin(): boolean {
+    return this.usuario?.rol === 'admin';
+  }
+
   cerrarSesion(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('usuario');

@@ -49,8 +49,18 @@ export class DashboardComponent implements OnInit {
 
     const usuarioData = localStorage.getItem('usuario');
     if (usuarioData) {
-      this.usuario = JSON.parse(usuarioData);
-      console.log('👤 Usuario:', this.usuario);
+      try {
+        this.usuario = JSON.parse(usuarioData);
+        console.log('👤 Usuario en Dashboard:', this.usuario);
+      } catch (e) {
+        console.error('Error al parsear usuario en Dashboard:', e);
+      }
+    }
+
+    if (this.usuario?.rol !== 'admin') {
+      this.error.set('⛔ Acceso denegado: No tienes permisos de Administrador para acceder a esta sección.');
+      this.loading.set(false);
+      return;
     }
 
     // Cargar estadísticas

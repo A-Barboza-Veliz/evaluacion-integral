@@ -43,10 +43,12 @@
           <span class="nav-icon" aria-hidden="true">🏠</span> Inicio
         </a>
 
-        <!-- ✅ DASHBOARD: VISIBLE PARA ADMIN O DISPONIBLE PARA REGRESAR -->
-        <a routerLink="/dashboard" routerLinkActive="active">
-          <span class="nav-icon" aria-hidden="true">📊</span> Dashboard
-        </a>
+        <!-- ✅ DASHBOARD: SOLO VISIBLE PARA ADMIN -->
+        @if (esAdmin()) {
+          <a routerLink="/dashboard" routerLinkActive="active">
+            <span class="nav-icon" aria-hidden="true">📊</span> Dashboard
+          </a>
+        }
 
         <div class="sidebar-section-label">Gestión académica</div>
         
@@ -56,8 +58,10 @@
         <!-- ✅ DOCENTES -->
         <a routerLink="/docentes" routerLinkActive="active"><span class="nav-icon" aria-hidden="true">👨‍🏫</span> Docentes</a>
         
-        <!-- ✅ ESTUDIANTES -->
-        <a routerLink="/estudiantes" routerLinkActive="active"><span class="nav-icon" aria-hidden="true">👥</span> Estudiantes</a>
+        <!-- ✅ ESTUDIANTES: SOLO VISIBLE PARA ADMIN -->
+        @if (esAdmin()) {
+          <a routerLink="/estudiantes" routerLinkActive="active"><span class="nav-icon" aria-hidden="true">👥</span> Estudiantes</a>
+        }
 
         <div class="sidebar-section-label">Sistema</div>
         <a href="javascript:void(0)" (click)="cerrarSesion()">
