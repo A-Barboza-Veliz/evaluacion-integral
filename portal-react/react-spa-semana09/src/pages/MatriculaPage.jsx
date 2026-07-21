@@ -4,9 +4,11 @@ import './MatriculaPage.css';
 const MatriculaPage = () => {
   const [showAlert, setShowAlert] = useState(false);
 
-  const handleMatricula = () => {
-    const angularUrl = (import.meta.env.VITE_ANGULAR_URL || 'https://evaluacion-integral-app.vercel.app').replace(/\/$/, '');
-    const searchParams = window.location.search;
+  const handleEntendido = () => {
+    const baseUrl = import.meta.env.VITE_ANGULAR_URL || 'https://evaluacion-integral-app.vercel.app';
+    const cleanUrl = baseUrl.trim().replace(/\/$/, '');
+    const angularUrl = cleanUrl.startsWith('http://') || cleanUrl.startsWith('https://') ? cleanUrl : `https://${cleanUrl}`;
+    const searchParams = window.location.search || '';
     window.location.href = `${angularUrl}/inicio${searchParams}`;
   };
 
@@ -86,13 +88,10 @@ const MatriculaPage = () => {
         </div>
 
         <div className="action-section">
-          <h3>¿Listo para dar el siguiente paso?</h3>
+          <h3>¿Entendido la información?</h3>
           <div className="action-buttons">
-            <button className="primary-btn" onClick={handleMatricula}>
-              🚀 Matricularme ahora
-            </button>
-            <button className="secondary-btn" onClick={handleRecordar}>
-              📌 Recordar después
+            <button className="primary-btn" onClick={handleEntendido}>
+              👍 Entendido, ir al portal de alumno
             </button>
           </div>
         </div>
