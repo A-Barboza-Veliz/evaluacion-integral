@@ -32,9 +32,8 @@ export class AppComponent implements OnInit {
     if (usuarioData) {
       try {
         this.usuario = JSON.parse(usuarioData);
-        console.log('👤 Usuario en App:', this.usuario);
       } catch (e) {
-        console.error('Error al parsear usuarioData:', e);
+        console.error('Error parse usuarioData:', e);
       }
     }
   }

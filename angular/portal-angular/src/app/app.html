@@ -38,12 +38,10 @@
       </div>
       <nav class="sidebar-nav" aria-label="Navegación administrativa">
         
-        <!-- ✅ INICIO: VISIBLE PARA TODOS -->
         <a routerLink="/inicio" routerLinkActive="active">
           <span class="nav-icon" aria-hidden="true">🏠</span> Inicio
         </a>
 
-        <!-- ✅ DASHBOARD: SOLO VISIBLE PARA ADMIN -->
         @if (esAdmin()) {
           <a routerLink="/dashboard" routerLinkActive="active">
             <span class="nav-icon" aria-hidden="true">📊</span> Dashboard
@@ -52,13 +50,10 @@
 
         <div class="sidebar-section-label">Gestión académica</div>
         
-        <!-- ✅ CURSOS -->
         <a routerLink="/cursos" routerLinkActive="active"><span class="nav-icon" aria-hidden="true">📚</span> Cursos</a>
         
-        <!-- ✅ DOCENTES -->
         <a routerLink="/docentes" routerLinkActive="active"><span class="nav-icon" aria-hidden="true">👨‍🏫</span> Docentes</a>
         
-        <!-- ✅ ESTUDIANTES: SOLO VISIBLE PARA ADMIN -->
         @if (esAdmin()) {
           <a routerLink="/estudiantes" routerLinkActive="active"><span class="nav-icon" aria-hidden="true">👥</span> Estudiantes</a>
         }

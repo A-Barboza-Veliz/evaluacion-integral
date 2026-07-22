@@ -1,4 +1,3 @@
-// controllers/authController.js
 const Usuario = require('../models/Usuario');
 const { crearHash, comprarPassword, generarToken } = require('../seguridad-web-api/src/auth');
 const { estaConectado } = require('../config/database');
@@ -12,8 +11,6 @@ const usuarioDemo = {
 };
 
 exports.registrar = async (req, res) => {
-  console.log('📥 Datos recibidos en register:', req.body);
-
   if (!estaConectado()) {
     return res.status(503).json({ error: 'El modo demo no permite registrar usuarios' });
   }
@@ -25,13 +22,11 @@ exports.registrar = async (req, res) => {
     const rol = req.body.rol || req.body.role || 'estudiante';
 
     if (!nombre || !correo || !password) {
-      console.log('❌ Faltan campos obligatorios');
       return res.status(400).json({ error: 'Nombre, correo y password son obligatorios' });
     }
 
     const existe = await Usuario.findOne({ correo });
     if (existe) {
-      console.log('❌ Correo ya registrado:', correo);
       return res.status(400).json({ error: 'El correo ya está registrado' });
     }
 
@@ -41,8 +36,6 @@ exports.registrar = async (req, res) => {
       password: crearHash(password),
       rol: rol || 'estudiante'
     });
-
-    console.log('✅ Usuario creado:', nuevoUsuario.correo);
 
     res.status(201).json({
       mensaje: 'Usuario registrado exitosamente',
@@ -55,7 +48,6 @@ exports.registrar = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('❌ Error en register:', error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -102,7 +94,6 @@ exports.login = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('❌ Error en login:', error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -115,25 +106,19 @@ exports.obtenerPerfil = async (req, res) => {
     }
     res.json(usuario);
   } catch (error) {
-    console.error('❌ Error en perfil:', error);
     res.status(500).json({ error: error.message });
   }
 };
 
-// ✅ NUEVO: Obtener todos los estudiantes (solo admin)
 exports.getEstudiantes = async (req, res) => {
   try {
-    console.log('📊 Obteniendo lista de estudiantes...');
-
     if (req.user.rol !== 'admin') {
       return res.status(403).json({ error: 'No tienes permisos para ver esta información' });
     }
 
     const estudiantes = await Usuario.find({ rol: 'estudiante' }).select('-password').sort({ createdAt: -1 });
-    console.log(`📊 ${estudiantes.length} estudiantes encontrados`);
     res.json(estudiantes);
   } catch (error) {
-    console.error('❌ Error al obtener estudiantes:', error);
     res.status(500).json({ error: error.message });
   }
 };

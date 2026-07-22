@@ -11,7 +11,6 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Limpiar cualquier sesion guardada previamente para entrar limpio
     localStorage.removeItem('token');
     localStorage.removeItem('usuario');
   }, []);
@@ -32,20 +31,14 @@ export default function LoginPage() {
       });
 
       const data = await res.json();
-      console.log('📥 Respuesta del login:', data);
 
       if (!res.ok) {
         throw new Error(data.error || 'Error al iniciar sesión');
       }
 
-      // Guardar token y usuario
       localStorage.setItem('token', data.token);
       localStorage.setItem('usuario', JSON.stringify(data.usuario));
 
-      console.log('✅ Token guardado:', localStorage.getItem('token'));
-      console.log('✅ Usuario guardado:', localStorage.getItem('usuario'));
-
-      // ✅ REDIRECCIÓN SEGÚN ROL
       const usuario = data.usuario;
       const usuarioEncoded = encodeURIComponent(JSON.stringify(usuario));
 
@@ -59,16 +52,13 @@ export default function LoginPage() {
       const studentUrl = formatUrl(process.env.NEXT_PUBLIC_STUDENT_URL);
 
       if (usuario.rol === 'admin') {
-        // Admin → Dashboard
         window.location.href = `${adminUrl}/dashboard?token=${data.token}&usuario=${usuarioEncoded}`;
       } else {
-        // Estudiante → Inicio
         window.location.href = `${studentUrl}/inicio?token=${data.token}&usuario=${usuarioEncoded}`;
       }
 
-    } catch (error) {
-      console.error('❌ Error:', error);
-      setErrorMsg(error.message || 'Error desconocido');
+    } catch (err) {
+      setErrorMsg(err.message || 'Error al procesar la solicitud');
     } finally {
       setLoading(false);
     }

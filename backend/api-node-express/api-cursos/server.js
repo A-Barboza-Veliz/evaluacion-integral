@@ -1,13 +1,10 @@
-//importando librerias de express
-// librerios cors
-
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 require('dotenv').config();
 
 const { conectarDB } = require('./config/database');
-const routes = require('./routes/cursoRoutes');
+const cursoRoutes = require('./routes/cursoRoutes');
 const authRoutes = require('./routes/authRoutes');
 
 const app = express();
@@ -17,20 +14,18 @@ app.use(cors({ origin: true, credentials: true }));
 app.use(express.json({ limit: '10kb' }));
 
 app.get('/health', (req, res) => {
-  res.json({ status: 'ok', mensaje: 'API de cursos funcionando' });
+  res.json({ status: 'ok', mensaje: 'API funcionando' });
 });
 
-app.use('/api', routes);
+app.use('/api', cursoRoutes);
 app.use('/api/auth', authRoutes);
 
-async function iniciarServidor() {
+const start = async () => {
   await conectarDB();
-
-  const PORT = process.env.PORT || 3000;
-
-  app.listen(PORT, () => {
-    console.log(`Servidor ejecutandose en puerto ${PORT}`);
+  const port = process.env.PORT || 3000;
+  app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
   });
-}
+};
 
-iniciarServidor();
+start();
