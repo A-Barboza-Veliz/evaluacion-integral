@@ -13,15 +13,28 @@ Proyecto Full Stack integral para la gestión académica de cursos, profesores, 
 
 ---
 
+## 🌐 Enlaces de Despliegue en Producción (URLs en Vivo)
+
+* 🔐 **Módulo de Autenticación / Login (Next.js - Vercel):**  
+  [https://evaluacion-integral-auth.vercel.app](https://evaluacion-integral-auth.vercel.app)
+* 🅰️ **Panel Administrativo y Portal Principal (Angular - Vercel):**  
+  [https://evaluacion-integral-app.vercel.app](https://evaluacion-integral-app.vercel.app)
+* ⚛️ **Portal del Estudiante y Aviso de Matrícula (React - Vercel):**  
+  [https://evaluacion-integral-react.vercel.app](https://evaluacion-integral-react.vercel.app)
+* ⚙️ **API REST Backend (Node.js/Express - Render):**  
+  [https://evaluacion-integral-api.onrender.com/api](https://evaluacion-integral-api.onrender.com/api)
+
+---
+
 ## 📹 Enlace de la Exposición en YouTube
 
-* 🔗 **Video de la Exposición:** `https://youtu.be/Id6ftOFOUIU`
+* 🔗 **Video de la Exposición:** [https://youtu.be/Id6ftOFOUIU](https://youtu.be/Id6ftOFOUIU)
 
 ---
 
 ## 🐙 Repositorio de GitHub
 
-* 🔗 **Link del Repositorio:** `https://github.com/A-Barboza-Veliz/evaluacion-integral.git`
+* 🔗 **Link del Repositorio:** [https://github.com/A-Barboza-Veliz/evaluacion-integral.git](https://github.com/A-Barboza-Veliz/evaluacion-integral.git)
 
 ---
 
